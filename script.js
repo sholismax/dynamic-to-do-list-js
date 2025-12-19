@@ -1,56 +1,48 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Select DOM elements
-    const addButton = document.getElementById("add-task-btn");
-    const taskInput = document.getElementById("task-input");
-    const taskList = document.getElementById("task-list");
+// Get form and input elements
+const form = document.getElementById("myForm");
+const username = document.getElementById("username");
+const email = document.getElementById("email");
+const errorBox = document.getElementById("errorMessages");
 
-    // Function to add a new task
-    function addTask() {
-        // Get and trim the input value
-        const taskText = taskInput.value.trim();
+// This array will store all validation messages
+let messages = [];
 
-        // Check if input is empty
-        if (taskText === "") {
-            alert("Please enter a task.");
-            return;
-        }
+// This flag checks if the form is valid or not
+let isValid = true;
 
-        // Create list item
-        const listItem = document.createElement("li");
-        listItem.textContent = taskText;
+// Listen for form submission
+form.addEventListener("submit", function (e) {
+  // Reset values on every submit
+  messages = [];
+  isValid = true;
 
-        // Create remove button
-        const removeButton = document.createElement("button");
-        removeButton.textContent = "Remove";
-        removeButton.className = "remove-btn"; // Assign class directly
+  // Clear old errors
+  errorBox.innerHTML = "";
+  username.classList.remove("error");
+  email.classList.remove("error");
 
-        // Remove task when button is clicked
-        removeButton.onclick = function () {
-            taskList.removeChild(listItem);
-        };
+  // Username validation
+  if (username.value.trim() === "") {
+    messages.push("Username is required");
+    username.classList.add("error");
+    isValid = false;
+  }
 
-        // Append remove button to list item
-        listItem.appendChild(removeButton);
+  // Email validation
+  if (email.value.trim() === "") {
+    messages.push("Email is required");
+    email.classList.add("error");
+    isValid = false;
+  }
 
-        // Append list item to task list
-        taskList.appendChild(listItem);
+  // If form is not valid, stop submission and show messages
+  if (!isValid) {
+    e.preventDefault();
 
-        // Clear input field
-        taskInput.value = "";
-    }
-
-    // Add task when button is clicked
-    addButton.addEventListener("click", function () {
-        addTask();
+    messages.forEach(function (message) {
+      const p = document.createElement("p");
+      p.textContent = message;
+      errorBox.appendChild(p);
     });
-
-    // Add task when Enter key is pressed
-    taskInput.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            addTask();
-        }
-    });
-
-    // Optional: invoke addTask on DOMContentLoaded (no task will be added due to validation)
-    addTask();
+  }
 });
